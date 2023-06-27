@@ -22,7 +22,7 @@ namespace Dll
             if (this.usarWS)
             {
                 httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("http://localhost:7123");
+                httpClient.BaseAddress = new Uri("https://localhost:7123");
             }
         }
 
@@ -34,14 +34,16 @@ namespace Dll
 
             return true;
         }
-        public bool AgregarExamen(int id, string nombre, string descripcion, out bool resultado, out string descripcionResultado)
+        public async Task<(bool, string)> AgregarExamen(int id, string nombre, string descripcion)
         {
+            bool resultado;
+            string descripcionResultado;
+
             if(!validacionDatos(id, nombre, descripcion)) 
             { 
                 resultado = false;
                 descripcionResultado = "Error en la validacion de datos";
-
-                return false;
+                return (resultado, descripcionResultado);
             }
 
             if (usarWS)
@@ -49,16 +51,11 @@ namespace Dll
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
                 try
                 {
-                    HttpResponseMessage response = httpClient.GetAsync($"/agregar?{query}").Result;
-                    descripcionResultado = response.ToString();
-                    if (response.IsSuccessStatusCode)
-                    {
-                        resultado = true;
-                    }
-                    else
-                    {
-                        resultado = false;
-                    }
+                    HttpResponseMessage response = await httpClient.GetAsync($"/agregar?{query}");
+
+                    resultado = response.IsSuccessStatusCode;
+                    descripcionResultado = await response.Content.ReadAsStringAsync();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -71,8 +68,6 @@ namespace Dll
                     resultado = false;
                     descripcionResultado = $"{ex.Message} : {ex.InnerException.Message}";
                 }
-
-                
             }
             else
             {
@@ -112,32 +107,28 @@ namespace Dll
                 }
             }
 
-            return resultado;
+            return (resultado, descripcionResultado);
         }
 
-        public bool ActualizarExamen(int id, string nombre, string descripcion, out bool resultado, out string descripcionResultado)
+        public async Task<(bool, string)> ActualizarExamen(int id, string nombre, string descripcion)
         {
+            bool resultado;
+            string descripcionResultado;
+
             if (!validacionDatos(id, nombre, descripcion))
             {
                 resultado = false;
                 descripcionResultado = "Error en la validacion de datos";
-                return false;
+                return (resultado, descripcionResultado);
             }
 
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
-                HttpResponseMessage response = httpClient.GetAsync($"/actualizar?{query}").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"/actualizar?{query}");
 
-                descripcionResultado = response.ToString();
-                if (response.IsSuccessStatusCode)
-                {
-                    resultado = true;
-                }
-                else
-                {
-                    resultado = false;
-                }
+                resultado = response.IsSuccessStatusCode;
+                descripcionResultado = await response.Content.ReadAsStringAsync();
             }
             else
             {
@@ -177,32 +168,29 @@ namespace Dll
                 }
             }
 
-            return resultado;
+            return (resultado, descripcionResultado);
         }
 
-        public bool EliminarExamen(int id, out bool resultado, out string descripcionResultado)
+        public async Task<(bool, string)> EliminarExamen(int id)
         {
+            bool resultado;
+            string descripcionResultado;
+
             if (!validacionDatos(id, "", ""))
             {
                 resultado = false;
                 descripcionResultado = "Error en la validacion de datos";
-                return false;
+
+                return (resultado, descripcionResultado);
             }
 
             if (usarWS)
             {
                 string query = $"id={id}";
-                HttpResponseMessage response = httpClient.GetAsync($"/eliminar?{query}").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"/eliminar?{query}");
 
-                descripcionResultado = response.ToString();
-                if (response.IsSuccessStatusCode)
-                {
-                    resultado = true;
-                }
-                else
-                {
-                    resultado = false;
-                }
+                resultado = response.IsSuccessStatusCode;
+                descripcionResultado = await response.Content.ReadAsStringAsync();
             }
             else
             {
@@ -240,11 +228,10 @@ namespace Dll
                 }
             }
 
-            return resultado;
+            return (resultado, descripcionResultado);
         }
 
-        
-        public List<tblExaman> consultarExamenes(int id, string nombre, string descripcion)
+        public async Task<List<tblExaman>> consultarExamenes(int id, string nombre, string descripcion)
         {
             List<tblExaman> oExamenList = new List<tblExaman>();
             if (!validacionDatos(id, nombre, descripcion))
@@ -255,7 +242,9 @@ namespace Dll
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
-                HttpResponseMessage response = httpClient.GetAsync($"/actualizar?{query}").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"/actualizar?{query}");
+
+                Console.WriteLine(response.ToString());
             }
             else
             {

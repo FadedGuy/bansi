@@ -37,7 +37,7 @@ namespace examenSeleccionBansi
             UpdateDatagrid();
         }
 
-        private void btnAgregar_Click(object sender, EventArgs e)
+        private async void btnAgregar_Click(object sender, EventArgs e)
         {
             int id = Convert.ToInt32(txtBoxId.Text.ToString());
             string nombre = txtBoxNombre.Text.ToString();
@@ -46,14 +46,14 @@ namespace examenSeleccionBansi
             string resDescripcion;
 
             Dll.clsExamen examen = new clsExamen(checkBoxWS.Checked);
-            examen.AgregarExamen(id, nombre, descripcion, out resultado, out resDescripcion);
+            (resultado, resDescripcion) = await examen.AgregarExamen(id, nombre, descripcion);
 
             txtBoxResultado.Text = resDescripcion;
 
             UpdateDatagrid();
         }
 
-        private void btnActualizar_Click(object sender, EventArgs e)
+        private async void btnActualizar_Click(object sender, EventArgs e)
         {
             int id = Convert.ToInt32(txtBoxId.Text.ToString());
             string nombre = txtBoxNombre.Text.ToString();
@@ -62,34 +62,34 @@ namespace examenSeleccionBansi
             string resDescripcion;
 
             Dll.clsExamen examen = new clsExamen(checkBoxWS.Checked);
-            examen.ActualizarExamen(id, nombre, descripcion, out resultado, out resDescripcion);
+            (resultado, resDescripcion) = await examen.ActualizarExamen(id, nombre, descripcion);
 
             txtBoxResultado.Text = resDescripcion;
 
             UpdateDatagrid();
         }
 
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private async void btnEliminar_Click(object sender, EventArgs e)
         {
             int id = Convert.ToInt32(txtBoxId.Text.ToString());
             bool resultado;
             string resDescripcion;
 
             Dll.clsExamen examen = new clsExamen(checkBoxWS.Checked);
-            examen.EliminarExamen(id, out resultado, out resDescripcion);
+            (resultado, resDescripcion) = await examen.EliminarExamen(id);
 
             txtBoxResultado.Text = resDescripcion;
 
             UpdateDatagrid();
         }
 
-        private void btnConsultar_Click(object sender, EventArgs e)
+        private async void btnConsultar_Click(object sender, EventArgs e)
         {
             string nombre = txtBoxNombre.Text.ToString();
             string descripcion = txtBoxDescripcion.Text.ToString();
 
             Dll.clsExamen examen = new clsExamen(checkBoxWS.Checked);
-            List<Dll.tblExaman> examenes = examen.consultarExamenes(0, nombre, descripcion);
+            List<Dll.tblExaman> examenes = await examen.consultarExamenes(0, nombre, descripcion);
 
             dataGridView1.DataSource = examenes;
             txtBoxResultado.Text = examenes.Count.ToString();
