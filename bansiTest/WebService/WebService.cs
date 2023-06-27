@@ -102,7 +102,7 @@ namespace WebService
             return resultado;
         }
 
-        public List<TblExaman> ConsultarExamen(int id, string nombre, string descripcion)
+        public List<TblExaman> ConsultarExamen(string nombre, string descripcion)
         {
             using (BdiExamenContext db = new BdiExamenContext())
             {

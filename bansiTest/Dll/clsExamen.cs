@@ -26,6 +26,7 @@ namespace Dll
             }
         }
 
+        // Funcion auxiliar para validar los datos dados
         public bool validacionDatos(int id, string nombre, string descripcion)
         {
             if(id < 0) { return false; }
@@ -34,6 +35,7 @@ namespace Dll
 
             return true;
         }
+
         public async Task<(bool, string)> AgregarExamen(int id, string nombre, string descripcion)
         {
             bool resultado;
@@ -55,7 +57,6 @@ namespace Dll
 
                     resultado = response.IsSuccessStatusCode;
                     descripcionResultado = await response.Content.ReadAsStringAsync();
-                    
                 }
                 catch (Exception ex)
                 {
@@ -281,10 +282,7 @@ namespace Dll
                     }
                 }
             }
-
             return oExamenList;
         }
-
-       
     }
 }
