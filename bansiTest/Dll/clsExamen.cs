@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace Dll
 {
@@ -15,6 +17,7 @@ namespace Dll
         // Indica si usar WebServices o StoredProcedures
         private bool usarWS;
         private HttpClient httpClient;
+        private static string connectionString = "data source=localhost;initial catalog=BdiExamen;integrated security=True";
 
         public clsExamen(bool usarWs)
         {
@@ -26,7 +29,7 @@ namespace Dll
             }
         }
 
-        // Funcion auxiliar para validar los datos dados
+        // Función auxiliar para validar los datos dados
         public bool validacionDatos(int id, string nombre, string descripcion)
         {
             if(id < 0) { return false; }
@@ -44,7 +47,7 @@ namespace Dll
             if(!validacionDatos(id, nombre, descripcion)) 
             { 
                 resultado = false;
-                descripcionResultado = "Error en la validacion de datos";
+                descripcionResultado = "Error en la validación de datos";
                 return (resultado, descripcionResultado);
             }
 
@@ -72,7 +75,7 @@ namespace Dll
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection("data source=localhost;initial catalog=BdiExamen;integrated security=True"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     SqlTransaction transaction = connection.BeginTransaction();
@@ -119,7 +122,7 @@ namespace Dll
             if (!validacionDatos(id, nombre, descripcion))
             {
                 resultado = false;
-                descripcionResultado = "Error en la validacion de datos";
+                descripcionResultado = "Error en la validación de datos";
                 return (resultado, descripcionResultado);
             }
 
@@ -133,7 +136,7 @@ namespace Dll
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection("data source=localhost;initial catalog=BdiExamen;integrated security=True"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     SqlTransaction transaction = connection.BeginTransaction();
@@ -180,7 +183,7 @@ namespace Dll
             if (!validacionDatos(id, "", ""))
             {
                 resultado = false;
-                descripcionResultado = "Error en la validacion de datos";
+                descripcionResultado = "Error en la validación de datos";
 
                 return (resultado, descripcionResultado);
             }
@@ -195,7 +198,7 @@ namespace Dll
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection("data source=localhost;initial catalog=BdiExamen;integrated security=True"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     SqlTransaction transaction = connection.BeginTransaction();
@@ -236,20 +239,22 @@ namespace Dll
         {
             List<tblExaman> oExamenList = new List<tblExaman>();
             if (!validacionDatos(id, nombre, descripcion))
-            {
+            { 
                 return oExamenList;
             }
 
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
-                HttpResponseMessage response = await httpClient.GetAsync($"/actualizar?{query}");
+                HttpResponseMessage response = await httpClient.GetAsync($"/consultar?{query}");
 
-                Console.WriteLine(response.ToString());
+                string responseContent = await response.Content.ReadAsStringAsync();    
+
+                oExamenList = JsonConvert.DeserializeObject<List<tblExaman>>(responseContent);
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection("data source=localhost;initial catalog=BdiExamen;integrated security=True"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     SqlTransaction transaction = connection.BeginTransaction();
@@ -257,6 +262,7 @@ namespace Dll
                     {
                         SqlCommand command = new SqlCommand("spConsultar", connection);
                         command.CommandType = CommandType.StoredProcedure;
+                        command.Transaction = transaction;
 
                         command.Parameters.AddWithValue("@Nombre", nombre);
                         command.Parameters.AddWithValue("@Descripcion", descripcion);

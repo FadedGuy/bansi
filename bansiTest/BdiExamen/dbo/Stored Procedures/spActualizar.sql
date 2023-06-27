@@ -5,7 +5,6 @@
 --				Devuelve un codigo de retorno y su descripcion
 -- =============================================
 CREATE PROCEDURE spActualizar 
-	-- Add the parameters for the stored procedure here
 	@idExamen INT,
 	@Nombre VARCHAR(255),
 	@Descripcion VARCHAR(255),

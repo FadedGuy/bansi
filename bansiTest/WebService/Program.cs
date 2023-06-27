@@ -14,7 +14,7 @@ app.MapGet("/", () => "Hello World!");
 /// Datos requeridos
 ///     - id : id del examen (debe de ser uno no existente en la db)
 ///     - nombre : nombre del examen
-///     - descripcion : descripcion del examen
+///     - descripción : descripción del examen
 app.MapGet("/agregar", (WebService.WebService ws, HttpContext context) =>
 {
     int id = Convert.ToInt32(context.Request.Query["id"]);
@@ -32,7 +32,7 @@ app.MapGet("/agregar", (WebService.WebService ws, HttpContext context) =>
 /// Datos requeridos
 ///     - id : id del examen (debe de ser uno no existente en la db)
 ///     - nombre : nuevo nombre del examen
-///     - descripcion : nueva descripcion del examen
+///     - descripción : nueva descripción del examen
 app.MapGet("/actualizar", (WebService.WebService ws, HttpContext context) =>
 {
     int id = Convert.ToInt32(context.Request.Query["id"]);
@@ -63,7 +63,7 @@ app.MapGet("/eliminar", (WebService.WebService ws, HttpContext context) =>
 /// Endpoint Consultar
 /// Datos requeridos
 ///     - nombre : nombre del examen
-///     - descripcion : descripcion del examen
+///     - descripción : descripción del examen
 app.MapGet("/consultar", (WebService.WebService ws, HttpContext context) =>
 {
     string nombre = context.Request.Query["nombre"];

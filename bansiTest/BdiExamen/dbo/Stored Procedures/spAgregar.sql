@@ -2,10 +2,9 @@
 -- Author:		Kevin A
 -- Create date: 26/06/2023
 -- Description: Insertar un registro en la tabla tblExamen. 
---				Devuelve un codigo de retorno y su descricion
+--				Devuelve un codigo de retorno y su descripcion
 -- =============================================
 CREATE PROCEDURE spAgregar 
-	-- Add the parameters for the stored procedure here
 	@idExamen INT,
 	@Nombre VARCHAR(255),
 	@Descripcion VARCHAR(255),

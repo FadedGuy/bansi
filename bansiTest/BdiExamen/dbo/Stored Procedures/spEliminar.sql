@@ -5,7 +5,6 @@
 --				Devuelve un codigo retorno y su descripcion
 -- =============================================
 CREATE PROCEDURE spEliminar
-	-- Add the parameters for the stored procedure here
 	@idExamen INT,
 	@CodigoRetorno INT OUTPUT,
 	@DescripcionRetorno VARCHAR(255) OUTPUT
