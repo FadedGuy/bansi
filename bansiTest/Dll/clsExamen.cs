@@ -26,8 +26,24 @@ namespace Dll
             }
         }
 
+        public bool validacionDatos(int id, string nombre, string descripcion)
+        {
+            if(id < 0) { return false; }
+            if(nombre.Length < 0 || nombre.Length > 255) { return false; }
+            if(descripcion.Length < 0 || descripcion.Length > 255) { return false; }
+
+            return true;
+        }
         public bool AgregarExamen(int id, string nombre, string descripcion, out bool resultado, out string descripcionResultado)
         {
+            if(!validacionDatos(id, nombre, descripcion)) 
+            { 
+                resultado = false;
+                descripcionResultado = "Error en la validacion de datos";
+
+                return false;
+            }
+
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
@@ -101,6 +117,13 @@ namespace Dll
 
         public bool ActualizarExamen(int id, string nombre, string descripcion, out bool resultado, out string descripcionResultado)
         {
+            if (!validacionDatos(id, nombre, descripcion))
+            {
+                resultado = false;
+                descripcionResultado = "Error en la validacion de datos";
+                return false;
+            }
+
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
@@ -159,6 +182,13 @@ namespace Dll
 
         public bool EliminarExamen(int id, out bool resultado, out string descripcionResultado)
         {
+            if (!validacionDatos(id, "", ""))
+            {
+                resultado = false;
+                descripcionResultado = "Error en la validacion de datos";
+                return false;
+            }
+
             if (usarWS)
             {
                 string query = $"id={id}";
@@ -217,6 +247,11 @@ namespace Dll
         public List<tblExaman> consultarExamenes(int id, string nombre, string descripcion)
         {
             List<tblExaman> oExamenList = new List<tblExaman>();
+            if (!validacionDatos(id, nombre, descripcion))
+            {
+                return oExamenList;
+            }
+
             if (usarWS)
             {
                 string query = $"id={id}&nombre={nombre}&descripcion={descripcion}";
